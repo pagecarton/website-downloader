@@ -6,10 +6,9 @@ CONTENTS OF THIS FILE
  * More information
  * Features
 
-ABOUT PCMailer
+ABOUT PC Website Grabber
 ------------
-PCMailer is a PageCarton plugin to send emails safely and easily from a web server. Ever wanted to send emails from your server? Now you can! This plugin lets you send emails from your server via PageCarton Content Management System. 
-PageCarton is free and OpenSource software distributed under the GNU General Public License version 2 or later.
+To use this website grabber, all that you have to do is provide the URL, and it downloads the complete website, according to the options set. PC Website Grabber enables you to save website files from a remote server straight in your browser. Useful for offline browsing of an online resources. Opensource, Super intelligent and absolutely customizable PageCarton Plugin. It allows you to download a World Wide Web site from the Internet to a local directory, building recursively all directories, getting HTML, images, and other files from the server to your computer.
 
 Legal information about PageCarton and this plugin:
  * Know your rights when using PageCarton:
@@ -21,35 +20,31 @@ Legal information about PageCarton and this plugin:
 CONFIGURATION AND FEATURES
 --------------------------
 
-Installation instructions is available on https://plugins.pagecarton.org/2018/06/20/pcmailer.html
+Installation instructions is available on https://plugins.pagecarton.org/2018/07/12/website-downloader-website-copier.html
 
 More about configuration:
  * Install, upgrade, and maintain PageCarton:
    See INSTALL.txt and UPGRADE.txt
  * Download  
-   https://plugins.pagecarton.org/2018/06/20/pcmailer.html
+   https://plugins.pagecarton.org/2018/07/12/website-downloader-website-copier.html
 
 
 MORE INFORMATION
 ----------------
 
  * See the PageCarton plugins page site:
-   https://plugins.pagecarton.org/2018/06/20/pcmailer.html
+   https://plugins.pagecarton.org/2018/07/12/website-downloader-website-copier.html
 
 
 FEATURES
 ------------
 
-1. Email Campaign Manager.
+1. Website Downloader
 
-2. List manager and list categories.
+2. Easy to use
 
-3. Sending Delay
+3. Highly Configuration
 
-4. Autorun through PageCarton Cron
+4. Choose pages and assets to download
 
-5. WYSIWYG Email Editor
-
-6. Text Mode and HTML Email Mod
-
-7. CSV Contact Importer and Column Match
+5. Save all sites as zip archive
