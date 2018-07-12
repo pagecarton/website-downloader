@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DOCUMENT_ELEMENT table_name="project" creation_time="1531356211" modified_time="1531356211" table_version="0.4" module_version="1.00" table_class="PC_WebsiteGrabber_Project" creation_ip="2130706433">
+  <RECORDS autoId="2"/>
+  <TABLE_SETTINGS>
+    <DATA_TYPES website="INPUTTEXT" links_to_download="JSON" pages="JSON" local_links="JSON" external_sites_to_download="JSON" project_id="INPUTTEXT" creation_time="INPUTTEXT" modified_time="INPUTTEXT"/>
+    <FOREIGN_KEYS/>
+    <RELATIVES/>
+  </TABLE_SETTINGS>
+</DOCUMENT_ELEMENT>

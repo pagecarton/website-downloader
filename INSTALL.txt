@@ -1,0 +1,67 @@
+
+CONTENTS OF THIS FILE
+---------------------
+
+ * Requirements and notes
+ * Optional server requirements
+ * Installation
+
+REQUIREMENTS AND NOTES
+----------------------
+
+PageCarton requires:
+
+- A web server with PHP support, for example:
+  - Apache 2.0 (or greater) (http://httpd.apache.org/).
+  - Nginx 1.1 (or greater) (http://nginx.com/).
+- PHP 5.3 (or greater) (http://php.net/). For better security support it is
+  recommended to update to at least 5.5.21 or 5.6.5.
+
+PCMail requires:
+
+-  PHP with sendmail
+-  SMTP
+
+
+For more detailed information about PageCarton requirements, including a list of
+PHP extensions and configurations that are required, see "System requirements"
+(http://www.PageCarton.com/) in the PageCarton.com online documentation.
+
+For detailed information on how to configure a test server environment using a
+variety of operating systems and web servers, see "Local server setup"
+(http://www.PageCarton.com/download) in the PageCarton.com online documentation.
+
+Note that all directories mentioned in this document are always relative to the
+directory of your PageCarton installation, and commands are meant to be run from
+this directory (except for the initial commands that create that directory).
+
+OPTIONAL SERVER REQUIREMENTS
+----------------------------
+
+- If you want to use PageCarton's "Clean URLs" feature on an Apache web server, you
+  will need the mod_rewrite module and the ability to use local .htaccess
+  files.
+
+- PHP 5.5.21 provides features for improved security when used with MySQL. While
+  this is not required, it is highly encouraged to use PHP 5.5.21 or 5.6.5 and
+  above.
+
+INSTALLATION
+------------
+
+1. Install or upgrade PageCarton .
+
+   You can obtain the latest PageCarton release from http://www.PageCarton.org -- the
+   install script is available in .php format.
+
+2. Download PCMail from PageCarton plugins directory.
+
+   Direct link to the plugin download page is https://plugins.pagecarton.org/2018/06/20/pcmailer.html 
+
+3. Upload to the plugins page in the PageCarton admin panel
+   
+   http://example.com/pc-admin/Ayoola_Extension_Import_List/
+
+4. Activate the plugin and look for PCMail Options in the Admin Options under Admin Panel
+   
+   http://example.com/pc-admin
