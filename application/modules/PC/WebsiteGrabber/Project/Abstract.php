@@ -53,7 +53,7 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
      * 
      * @var array
      */
-	protected static $_linkRegexFull = '#["\']((http|https)://([^\'"\(\)]*))["\']?#';
+	protected static $_linkRegexFull = '#["\']((http|https)://([^\'"\(\)\\\\]*))["\']?#';
 	
     /**
      * Access level for player. Defaults to everyone
@@ -87,6 +87,7 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
      */
 	public static function filterHtmlLocalLink( $link )  
     {
+        $localUrl = $link;
         if( strpos( $localUrl, '.default_file' ) !== false )
         {
             $localUrl = str_ireplace( '.default_file', '', $localUrl );
@@ -127,8 +128,9 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
             foreach( $found as $occur )
             {
                 $localUrl = $values['local_links'][$occur];
-                $localUrl = static::filterHtmlLocalLink( $localUrl );
-           //     var_export( $localUrl );
+            //     var_export( $values['local_links'][$occur] );
+               $localUrl = static::filterHtmlLocalLink( $localUrl );
+          //      var_export( $localUrl );
                 $values['local_links'][$occur] = $localUrl;
 
                 if( strpos( $localUrl, '.default_file' ) !== false )
@@ -451,7 +453,7 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
                 $storage->store( $content );
             }
 
-		    preg_match_all('#(//)(www\.)?([^/:"\'<>\s]*[\.][^/:"\'<>\s]*)(/)?#', $content, $matches ); 
+		    preg_match_all('#(//)(www\.)?([^/:"\'<>\s\\\\]*[\.][^/:"\'<>\s\\\\]*)(/)?#', $content, $matches ); 
         //    var_export( $matches );
             $matches[3] = $matches[3] ? : array();
             array_unshift( $matches[3], str_ireplace( 'www.', '', self::getLinkDomain( $homePath ) ) );

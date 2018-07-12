@@ -65,7 +65,9 @@ class PC_WebsiteGrabber_Project_Grab extends PC_WebsiteGrabber_Project_Abstract
                 $localUrl = self::getLocalURL( $link );
                 $localUrl = static::filterHtmlLocalLink( $localUrl );
                 $localFile = $baseDir . DS . $localUrl;
-                if( is_file( $localFile ) )
+       //         var_export( $localUrl );
+        //        var_export( $localFile );
+                if( is_file( $localFile ) )  
                 {
                     continue;
                 }

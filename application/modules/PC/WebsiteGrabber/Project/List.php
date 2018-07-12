@@ -65,8 +65,8 @@ class PC_WebsiteGrabber_Project_List extends PC_WebsiteGrabber_Project_Abstract
             //        'external_sites_to_download' => array( 'field' => 'external_sites_to_download', 'value' =>  '%FIELD%', 'filter' =>  '' ), 
            //         '' => array( 'field' => '', 'value' =>  '%FIELD%', 'filter' =>  '' ), 
                     'Added' => array( 'field' => 'creation_time', 'value' =>  '%FIELD%', 'filter' =>  'Ayoola_Filter_Time' ), 
-                    '  ' => '<a style="font-size:smaller;" href="' . Ayoola_Application::getUrlPrefix() . '/tools/classplayer/get/object_name/PC_WebsiteGrabber_Project_Grab/?' . $this->getIdColumn() . '=%KEY%">Grab</a>', 
-                    '   ' => '<a style="font-size:smaller;" href="' . Ayoola_Application::getUrlPrefix() . '/tools/classplayer/get/object_name/PC_WebsiteGrabber_Project_Download/?' . $this->getIdColumn() . '=%KEY%">Download</a>', 
+                    '  ' => '<a style="font-size:smaller;" rel="shadowbox;changeElementId=' . $this->getObjectName() . '" href="' . Ayoola_Application::getUrlPrefix() . '/tools/classplayer/get/object_name/PC_WebsiteGrabber_Project_Grab/?' . $this->getIdColumn() . '=%KEY%">Grab</a>', 
+                    '   ' => '<a style="font-size:smaller;" rel="" href="' . Ayoola_Application::getUrlPrefix() . '/tools/classplayer/get/object_name/PC_WebsiteGrabber_Project_Download/?' . $this->getIdColumn() . '=%KEY%">Download</a>', 
                     '' => '%FIELD% <a style="font-size:smaller;" rel="shadowbox;changeElementId=' . $this->getObjectName() . '" href="' . Ayoola_Application::getUrlPrefix() . '/tools/classplayer/get/object_name/PC_WebsiteGrabber_Project_Editor/?' . $this->getIdColumn() . '=%KEY%">edit</a>', 
                     ' ' => '%FIELD% <a style="font-size:smaller;" rel="shadowbox;changeElementId=' . $this->getObjectName() . '" href="' . Ayoola_Application::getUrlPrefix() . '/tools/classplayer/get/object_name/PC_WebsiteGrabber_Project_Delete/?' . $this->getIdColumn() . '=%KEY%">x</a>', 
 				)
