@@ -43,8 +43,6 @@ FEATURES
 
 2. Easy to use
 
-3. Highly Configuration
+3. Choose pages and assets to download
 
-4. Choose pages and assets to download
-
-5. Save all sites as zip archive
+4. Save all sites as zip archive
