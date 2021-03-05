@@ -66,6 +66,21 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
     /**
      * 
      */
+	public static function getContent( $url )  
+    {
+        $storage = self::getObjectStorage( array( 'id' => 'grabbed-website-x' . $url, 'device' => 'File' ) );
+        if( ! $content = $storage->retrieve() )
+        {
+            $content = self::fetchLink( $url, array( 'time_out' => 288000, 'connect_time_out' => 288000, 'return_error_response' => true ) );
+            $storage->store( $content );
+        }
+        return $content;
+    }
+
+
+    /**
+     * 
+     */
 	public static function getBaseUrl( $data )  
     {
         $urlInfo = parse_url( $data['website'] );
@@ -88,16 +103,15 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
 	public static function filterHtmlLocalLink( $link )  
     {
         $localUrl = $link;
-        if( strpos( $localUrl, '.default_file' ) !== false )
+        if( strpos( $localUrl, '.xyz' ) !== false )
         {
-            $localUrl = str_ireplace( '.default_file', '', $localUrl );
-        //      var_export( $localUrl );
+            $localUrl = str_ireplace( '.xyz', '', $localUrl );
         }
         if( empty( $localUrl ) )
         {
             $localUrl .=  'index';
         }
-        if( ! strpos( $localUrl, '.' ) )
+        if( strpos( $localUrl, '.html' ) === false )
         {
             $localUrl .= '.html';
         }
@@ -113,31 +127,24 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
 
         $values['local_links'] = $storage->retrieve();
 
-   //     $local = array_flip( $values['local_links'] );
 
 
         //  turn pages to .html
-   //       var_export( $values );
-    //      var_export( $values['local_links'] );
-   //     var_export( $local );
         foreach( $values['pages'] as $link )
         {
 
-            $localLink = self::getLocalURL( $link );
+            $localLink = self::getLocalURL( $link, $values );
             $found = array_keys( $values['local_links'], $localLink );
             foreach( $found as $occur )
             {
                 $localUrl = $values['local_links'][$occur];
-            //     var_export( $values['local_links'][$occur] );
-               $localUrl = static::filterHtmlLocalLink( $localUrl );
-          //      var_export( $localUrl );
+                $localUrl = static::filterHtmlLocalLink( $localUrl );
                 $values['local_links'][$occur] = $localUrl;
 
-                if( strpos( $localUrl, '.default_file' ) !== false )
+                if( strpos( $localUrl, '.xyz' ) !== false )
                 {
-                    $localUrl = str_ireplace( '.default_file', '', $localUrl );
+                    $localUrl = str_ireplace( '.xyz', '', $localUrl );
                     $values['local_links'][$occur] = $localUrl;
-              //      var_export( $localUrl );
                 }
                 if( empty( $localUrl ) )
                 {
@@ -149,34 +156,40 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
                     $values['local_links'][$occur] = $localUrl;
                 }
             }
-        //    var_export( $values['local_links'] );
         }
-	//		var_export(  $data );
     }
 
     /**
      * 
      */
-	public static function getLocalURL( $link, $defaultExtension = 'default_file' )  
+	public static function getLocalURL( $link, array $data = null, $defaultExtension = 'xyz' )  
     {
-        $urlInfo = parse_url( $link );
-        $localUrl = trim( $urlInfo['path'], '/' );
-        if( empty( $urlInfo['host'] ) )
+
+        $xc = explode( '//', $data['website'] );
+        $home = array_pop( $xc );
+        $home = trim( $home, ' /' );
+
+
+        if( stripos( $link, $home ) !== false )
         {
-            $localArray = explode( '/', $link );
-            array_shift( $localArray );
-            $localUrl = implode( '/', $localArray );
+            $localUrl = str_ireplace( $home, '', $link );
         }
-        if( empty( $localUrl ) )
+        else
         {
-        //    $localUrl .=  'index';
+            $urlInfo = parse_url( $link );
+            $localUrl = trim( $urlInfo['path'], '/' );
+            if( empty( $urlInfo['host'] ) )
+            {
+                $localArray = explode( '/', $link );
+                array_shift( $localArray );
+                $localUrl = implode( '/', $localArray );
+            }
         }
-        if( ! strpos( $localUrl, '.' ) )
+        
+        if( strpos( $localUrl, '.php' ) )
         {
-        //   $localUrl .=  '.html';
+            $localUrl .= '.html';
         }
-     //   $filter = new Ayoola_Filter_Name();
-     //   $localUrl = $filter->filter( $localUrl );
         list( $name, $extension ) = explode( '.', $localUrl );
         if( empty( $extension ) )
         {
@@ -195,18 +208,20 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
             $name .= '-' . $query;
             $localUrl = $name . '.' . $extension;
         }
-        if( strlen( $name ) > 50 )
-//        if( strlen( $name ) > 50 && $extension != 'html' )
+        if( strlen( $name ) > 150 )
+//      if( strlen( $name ) > 50 && $extension != 'html' )
         {
             $name =  md5( $name );
             $localUrl = $name;
             $localUrl .= $extension ? ( '.' . $extension ) : null;
         }
-        $localUrl = str_replace( array( '/', '?', '&', '--' ), '-', $localUrl );
-    //    var_export( $link );
-    //    var_export( $localUrl );
+        $localUrl = str_replace( array( '?', '&', '--' ), '-', $localUrl );
+        if( $extension === 'html' )
+        {
+            $localUrl = str_replace( array( '/' ), '-', $localUrl );
+        }
+        $localUrl = trim( $localUrl, ' /' );
        
-     //   if( )
         return $localUrl;
     }
 
@@ -215,7 +230,6 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
      */
 	public static function filterContent( $projectData, $content )  
     {
-     //   var_export(  $projectData );
         $ccc = function( $matches ) use ( $projectData )
         {
             $link = $matches[0];
@@ -227,22 +241,15 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
         };
         $xxx = function( $matches ) use ( $projectData )
         {
-          //  var_export( $matches );
             $link = $matches[0];
-       //     var_export( $link . '<br>' );
             if( ! empty( $projectData['local_links'][$matches[1]] ) )
             {
                 $link = str_replace( $matches[1], $projectData['local_links'][$matches[1]], $link );
             }
-      //      var_export( $link . '<br>' );
             return $link;
         };
-      //  for
         $content = preg_replace_callback( static::$_linkRegex, $ccc, $content  );
         $content = preg_replace_callback( static::$_linkRegexFull, $xxx, $content  );
-        //  clear the domain name
-    //    $urlInfo = parse_url( $link );
-        //         var_export( $urlInfo );
 
         foreach( $projectData['external_sites_to_download'] as $domain )
         {
@@ -311,38 +318,30 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
         preg_match_all( static::$_linkRegexFull, $content, $fullLinks ); 
         $fullLinks[1] = $fullLinks[1] ? : array();
         $matches[2] = $matches[2] ? : array();
-    //    var_export( $homePath );
         $storage = static::getObjectStorage( array( 'id' => 'local-links' . $homePath, 'device' => 'Session' ) );
         $matches[2] = array_merge( $matches[2], $fullLinks[1] );
         $matches[2] = array_unique( $matches[2] );
         $links = array();
         $formerLinks = array();
         $localLinks = array();
-     // var_export( $matches[2] );
         foreach( $matches[2] as $key => $link )
         {
             //  set this
             $link = trim( $link );
-        //  list( $link ) = explode( '?', $link );
-        //  list( $link ) = explode( '#', $link );
+
             if( ! $link || $link[0] == '#' || $link[0] == '?' ){ continue; }
             if( in_array( $link, $links ) ){ continue; } // skip duplicate process
-       //   var_export( $link );
-      //    var_export( $link . "\r\n" );
+
             $link = self::relativeLinkToFullPath( $link, $homePath );
-     //     var_export( $link . "\r\n" );
-       //     var_export( $link );
-       //     var_export( self::getLinkDomain( $link ) );
+
             if( ! in_array( self::getLinkDomain( $link ), Ayoola_Form::getGlobalValue( 'external_sites_to_download' ) ? : array() ) )
             {
                 continue;
             }
-            $link = trim( $link, ' /' );
+            $link = trim( $link, ' ' );
             $links[$link] = $link;
             $formerLinks[$matches[2][$key]] = $link;
-            $localLinks[$matches[2][$key]] = self::getLocalURL( $link );
-
-
+            $localLinks[$matches[2][$key]] = self::getLocalURL( $link, array( 'website' => $homePath ) );
         }
         $storage->store( $localLinks );
         return $formerLinks;
@@ -430,37 +429,23 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
 		//	Form to create a new page
         $form = new Ayoola_Form( array( 'name' => $this->getObjectName(), 'data-not-playable' => true ) );
 		$form->submitValue = $submitValue ;
-//		$form->oneFieldSetAtATime = true;
 
 		$fieldset = new Ayoola_Form_Element;
-	//	$fieldset->placeholderInPlaceOfLabel = false;       
         $fieldset->addElement( array( 'name' => 'website', 'label' => 'Web Addresss', 'type' => 'InputText', 'value' => @$values['website'] ) ); 
 
         if( $homePath = $this->getGlobalValue( 'website' ) )
         {
             $homePath =  str_ireplace( 'www.', '', $homePath );
             $fieldset->addFilter( 'website', array( 'DefiniteValue' => $homePath ) ); 
-          //  if( ! strstr( $homePath, '//' ) )
-            { 
-            //    $homePath = 'http://' . trim( $homePath );
-            }
 
-       //     set_time_limit( 120 );
-            $storage = self::getObjectStorage( array( 'id' => 'form-content' . $homePath, 'device' => 'File' ) );
-            if( ! $content = $storage->retrieve() )
-            {
-                $content = self::fetchLink( $homePath );
-                $storage->store( $content );
-            }
+            set_time_limit( 0 );
+            $content = self::getContent( $homePath );
 
 		    preg_match_all('#(//)(www\.)?([^/:"\'<>\s\\\\]*[\.][^/:"\'<>\s\\\\]*)(/)?#', $content, $matches ); 
-        //    var_export( $matches );
             $matches[3] = $matches[3] ? : array();
             array_unshift( $matches[3], str_ireplace( 'www.', '', self::getLinkDomain( $homePath ) ) );
-     //       $matches[3] = self::getLinkDomain( $homePath );
             $external = array_unique( array_map( 'strtolower', $matches[3] ) );
             $external = array_combine( $external, $external );
-     //       ksort( $external );
             $fieldset->addElement( array( 'name' => 'external_sites_to_download', 'label' => 'External sites to download assets from', 'type' => 'SelectMultiple', 'value' => @$values['external_sites_to_download'] ), $external ); 
 
             //	Look for html links
@@ -473,18 +458,14 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
             foreach( $childLinks as $each )
             {
                 if( ! $link = $each->getAttribute( 'href' ) ){ continue; }
+
                 //	Optimizing - remove hash and querystrings
-             //   list( $link ) = explode( '?', $link );
                 list( $link ) = explode( '#', $link );
                 if( ! $link ){ continue; }
                 if( in_array( $link, $linksBank ) ){ continue; } // skip duplicate process
                 $linksBank[] = $link;
                 $link = self::relativeLinkToFullPath( $link, $homePath );
-           //         var_export( $link );
-            //    var_export( self::getLinkDomain( $link ) );
                 $linkDomain = self::getLinkDomain( $link );
-           //     var_export( $link );
-           //     var_export( $linkDomain );
                 if( $linkDomain && ! in_array( $linkDomain, Ayoola_Form::getGlobalValue( 'external_sites_to_download' ) ? : array() ) )
                 {
                     continue;
@@ -492,7 +473,6 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
                 if( ! $link ){ continue; }
                 $pages[$link] = $link;
             } 
-     //       var_export( $pages );
             if( $pages )
             {
                 unset( $pages[''] );
@@ -503,25 +483,30 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
             {
                 $fieldset->addElement( array( 'name' => 'pages', 'type' => 'Hidden', 'value' => null  ) ); 
             }
-            
 
+            if( $selectedPages = $this->getGlobalValue( 'pages' ) )
+            {
+                foreach( $selectedPages as $page )
+                {
+                    $content .= self::getContent( $page );  
+                }
 
-            if( $links = self::getLinks( $content, $homePath ) )
-            {
-                $links = array_unique( array_combine( $links, $links ) );
-                unset( $links[''] );
-                ksort( $links );
-                $links = array_diff( $links, $pages );
-            //  var_export( $links );
-                $fieldset->addElement( array( 'name' => 'links_to_download', 'label' => 'Other Assets', 'type' => 'SelectMultiple', 'value' => @$values['links_to_download'] ? : $links ), $links ); 
+                if( $links = self::getLinks( $content, $homePath ) )
+                {
+                    $links = array_unique( array_combine( $links, $links ) );
+                    unset( $links[''] );
+                    ksort( $links );
+                    $links = array_diff( $links, $pages );
+                    $fieldset->addElement( array( 'name' => 'links_to_download', 'label' => 'Other Assets', 'type' => 'SelectMultiple', 'value' => @$values['links_to_download'] ? : $links ), $links ); 
+                }
+                else
+                {
+                    $fieldset->addElement( array( 'name' => 'links_to_download', 'type' => 'Hidden', 'value' => null  ) ); 
+                }
             }
-            else
-            {
-                $fieldset->addElement( array( 'name' => 'links_to_download', 'type' => 'Hidden', 'value' => null  ) ); 
-            }
+
             $fieldset->addRequirements( array( 'NotEmpty' => null ) ); 
         }
-//$fieldset->addElement( array( 'name' => '', 'type' => 'InputText', 'value' => @$values[''] ) ); 
 
 		$fieldset->addLegend( $legend );
 		$form->addFieldset( $fieldset );   
