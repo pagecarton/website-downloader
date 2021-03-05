@@ -31,9 +31,7 @@ class PC_WebsiteGrabber_Project_Grab extends PC_WebsiteGrabber_Project_Abstract
 			if( ! $data = $this->getIdentifierData() ){ return false; }
 			$this->createConfirmationForm( 'Grab', 'Grab Website' );
 			$this->setViewContent( $this->getForm()->view(), true );
-      //      var_export( $data );
 			if( ! $values = $this->getForm()->getValues() ){ return false; }
-        //    ;
 		    $this->setViewContent( self::grab( $data ) );
             $baseUrl = self::getBaseUrl( $data );
             $baseDir = self::getBaseDir( $baseUrl );
@@ -55,6 +53,7 @@ class PC_WebsiteGrabber_Project_Grab extends PC_WebsiteGrabber_Project_Abstract
     {    
 		try
 		{ 
+            //var_export( $data );
             //  Code that runs the widget goes here...
             $baseUrl = self::getBaseUrl( $data );
             $baseDir = self::getBaseDir( $baseUrl );
@@ -62,50 +61,39 @@ class PC_WebsiteGrabber_Project_Grab extends PC_WebsiteGrabber_Project_Abstract
             $done = null;
             foreach( $data['pages'] as $link )
             {
-                $localUrl = self::getLocalURL( $link );
+                //break;
+
+                $localUrl = self::getLocalURL( $link, $data );
                 $localUrl = static::filterHtmlLocalLink( $localUrl );
-                $localFile = $baseDir . DS . $localUrl;
-       //         var_export( $localUrl );
-        //        var_export( $localFile );
+                $localFile = $baseDir . DS . $localUrl;    
+                $myUrl = Ayoola_Application::getUrlPrefix() . $baseUrl . '/' . $localUrl;
+
                 if( is_file( $localFile ) )  
                 {
+                    $done .= '<div class="pc-notify-info">Already Saved <a target="_blank" href="' . $myUrl . '">' . $myUrl . '</a></div>';
                     continue;
                 }
-                $myUrl = Ayoola_Application::getUrlPrefix() . $baseUrl . '/' . $localUrl;
                 Ayoola_Doc::createDirectory( dirname( $localFile ) );
-                $storage = self::getObjectStorage( array( 'id' => 'content-' . md5( $link ), 'device' => 'File' ) );
-       //         var_export( $localUrl );
-       //         var_export( $localFile );
-                if( ! $content = $storage->retrieve() )
-                {
-                    $content = self::fetchLink( $link, array( 'time_out' => 288000, 'connect_time_out' => 288000, 'return_error_response' => true ) );
-                    $storage->store( $content );
-                }
+                $content = self::getContent( $link );   
                 $content = static::filterContent( $data, $content );
                 file_put_contents( $localFile, $content );
                 $done .= '<div class="pc-notify-info">Saved <a target="_blank" href="' . $myUrl . '">' . $myUrl . '</a></div>';
-		//	    $this->setViewContent( '<div class="pc-notify-info">Saved <a target="_blank" href="' . $myUrl . '">' . $myUrl . '</a></div>' );
-              //  echo $content;
-              //  exit();
-             //   break;
             }
             foreach( $data['links_to_download'] as $link )
             {
-                $localUrl = self::getLocalURL( $link );
+                $localUrl = self::getLocalURL( $link, $data );
                 $localFile = $baseDir . DS . $localUrl;
-           //     var_export( $link );
-            //    var_export( $localUrl );
+                if( ! stripos( $localFile, '.css' ) && ! stripos( $localFile, '.js' ))
+                {
+                //    continue;
+                }
+
                 if( is_file( $localFile ) )
                 {
                     continue;
                 }
                 Ayoola_Doc::createDirectory( dirname( $localFile ) );
-                $storage = self::getObjectStorage( array( 'id' => 'content-' . md5( $link ), 'device' => 'File' ) );
-                if( ! $content = $storage->retrieve() )
-                {
-                    $content = self::fetchLink( $link, array( 'time_out' => 288000, 'connect_time_out' => 288000, 'return_error_response' => true ) );
-                    $storage->store( $content );
-                }
+                $content = self::getContent( $link );
                 $content = static::filterContent( $data, $content );
                 file_put_contents( $localFile, $content );
             }
@@ -117,7 +105,6 @@ class PC_WebsiteGrabber_Project_Grab extends PC_WebsiteGrabber_Project_Abstract
 		catch( Exception $e )
         { 
             //  Alert! Clear the all other content and display whats below.
-         //   $this->setViewContent( '<p class="badnews">Theres an error in the code</p>', true ); 
             return false; 
         }
 	}
