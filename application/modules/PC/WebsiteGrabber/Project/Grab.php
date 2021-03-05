@@ -85,7 +85,7 @@ class PC_WebsiteGrabber_Project_Grab extends PC_WebsiteGrabber_Project_Abstract
                 $localFile = $baseDir . DS . $localUrl;
                 if( ! stripos( $localFile, '.css' ) && ! stripos( $localFile, '.js' ))
                 {
-                //    continue;
+                //    continue;  
                 }
 
                 if( is_file( $localFile ) )
