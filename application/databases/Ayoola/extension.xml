@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DOCUMENT_ELEMENT table_name="extension" creation_time="1614971987" modified_time="1614971987" table_version="0.22" module_version="1.00" table_class="Ayoola_Extension" creation_ip="2130706433">
+  <RECORDS autoId="2">
+    <TABLE_ROW ROW_ID="1">
+      <TABLE_FIELD FIELD_KEY="extension_title"><![CDATA[Website Copier]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="modules"><![CDATA[[&quot;\/PC\/WebsiteGrabber.php&quot;,&quot;\/PC\/WebsiteGrabber\/Project.php&quot;,&quot;\/PC\/WebsiteGrabber\/Project\/Abstract.php&quot;,&quot;\/PC\/WebsiteGrabber\/Project\/Creator.php&quot;,&quot;\/PC\/WebsiteGrabber\/Project\/Delete.php&quot;,&quot;\/PC\/WebsiteGrabber\/Project\/Download.php&quot;,&quot;\/PC\/WebsiteGrabber\/Project\/Editor.php&quot;,&quot;\/PC\/WebsiteGrabber\/Project\/Grab.php&quot;,&quot;\/PC\/WebsiteGrabber\/Project\/List.php&quot;,&quot;\/PC\/WebsiteGrabber\/Sites.php&quot;]]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="settings_class"><![CDATA[]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="databases"><![CDATA[[&quot;\/Ayoola\/Page\/Menu\/option.xml&quot;]]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="extension_name"><![CDATA[website_copier]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="status"><![CDATA[]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="settings"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="components"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="documents"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="plugins"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="pages"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="templates"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="article_url"><![CDATA[]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="dependencies"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="installed_dependencies"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="ready_dependencies"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="tested_with"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="extension_id"><![CDATA[0-1614971987-1]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="creation_time"><![CDATA[1614971987]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="modified_time"><![CDATA[]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="__user_id"><![CDATA[1554892638.1731]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="__update_user_id"><![CDATA[null]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="__user_agent_id"><![CDATA[]]></TABLE_FIELD>
+      <TABLE_FIELD FIELD_KEY="__ip"><![CDATA[{&quot;REMOTE_ADDR&quot;:&quot;127.0.0.1&quot;,&quot;HTTP_CLIENT_IP&quot;:&quot;&quot;,&quot;HTTP_X_FORWARDED_FOR&quot;:&quot;&quot;}]]></TABLE_FIELD>
+    </TABLE_ROW>
+  </RECORDS>
+  <TABLE_SETTINGS>
+    <DATA_TYPES extension_name="INPUTTEXT, UNIQUE" extension_title="INPUTTEXT" status="INPUTTEXT" settings="JSON" settings_class="INPUTTEXT" components="JSON" modules="JSON" databases="JSON" documents="JSON" plugins="JSON" pages="JSON" templates="JSON" article_url="INPUTTEXT" dependencies="JSON" installed_dependencies="JSON" ready_dependencies="JSON" tested_with="JSON" extension_id="INPUTTEXT" creation_time="INPUTTEXT" modified_time="INPUTTEXT" __user_id="INPUTTEXT" __update_user_id="JSON" __user_agent_id="INPUTTEXT" __ip="JSON"/>
+    <FOREIGN_KEYS/>
+    <RELATIVES/>
+  </TABLE_SETTINGS>
+</DOCUMENT_ELEMENT>
