@@ -172,6 +172,9 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
 
         if( stripos( $link, $home ) !== false )
         {
+            //  fix
+            //  templates.envytheme.com/poxo/default/index.html
+            $home = self::filterHomePath( $home );
             $localUrl = str_ireplace( $home, '', $link );
         }
         else
@@ -216,6 +219,8 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
             $localUrl .= $extension ? ( '.' . $extension ) : null;
         }
         $localUrl = str_replace( array( '?', '&', '--' ), '-', $localUrl );
+        $localUrl = trim( $localUrl, ' /-' );
+        
         if( $extension === 'html' )
         {
             $localUrl = str_replace( array( '/' ), '-', $localUrl );
@@ -348,20 +353,40 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
     }
 
     /**
+     * Convert http://example.com/url/index.htm to http://example.com/url
+     * 
+     * @param string Home path e.g. http://example.com
+     * @return string 
+     */
+	public static function filterHomePath( $homePath )  
+    {
+        $urlInfoX = parse_url( $homePath );
+        $dcY = trim( $urlInfoX['path'], '/' );
+        $dcx = explode( '.', $dcY );
+        $ext = array_pop( $dcx );
+        if( count( $dcx ) > 0 )
+        {
+            $homePath = dirname( $homePath );
+        }
+        return $homePath;
+    }
+
+    /**
      * Convert /url to http://example.com/url
      * 
-     * param string Url e.g. /url
-     * param string Home path e.g. http://example.com
-     * return string 
+     * @param string Url e.g. /url
+     * @param string Home path e.g. http://example.com
+     * @return string 
      */
 	public static function relativeLinkToFullPath( $link, $homePath )  
     {
-    //    var_export( $link . '<br>' );
+
+        $homePath = self::filterHomePath( $homePath );
+
         $homePath = trim( $homePath, ' /' );
         if( $link[0] == '/' && ! strstr( $link, '//' ) )
         { 
             $link = '//' . $homePath . $link; 
-       //     var_export( $link );
         } //	Seek for absolute urls
         while( ! strstr( $link, '//' ) && ! strstr( $link, ':' ) ) // Seek for relative urls			
         {

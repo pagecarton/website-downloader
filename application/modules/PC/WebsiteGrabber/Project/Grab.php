@@ -64,6 +64,7 @@ class PC_WebsiteGrabber_Project_Grab extends PC_WebsiteGrabber_Project_Abstract
                 //break;
 
                 $localUrl = self::getLocalURL( $link, $data );
+
                 $localUrl = static::filterHtmlLocalLink( $localUrl );
                 $localFile = $baseDir . DS . $localUrl;    
                 $myUrl = Ayoola_Application::getUrlPrefix() . $baseUrl . '/' . $localUrl;
@@ -74,6 +75,8 @@ class PC_WebsiteGrabber_Project_Grab extends PC_WebsiteGrabber_Project_Abstract
                     continue;
                 }
                 Ayoola_Doc::createDirectory( dirname( $localFile ) );
+
+                
                 $content = self::getContent( $link );   
                 $content = static::filterContent( $data, $content );
                 file_put_contents( $localFile, $content );
