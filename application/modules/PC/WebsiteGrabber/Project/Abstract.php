@@ -225,8 +225,8 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
         {
             $localUrl = str_replace( array( '/' ), '-', $localUrl );
         }
-        $localUrl = trim( $localUrl, ' /' );
-       
+        $localUrl = trim( $localUrl, ' /-?#' );
+  
         return $localUrl;
     }
 
@@ -360,10 +360,12 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
      */
 	public static function filterHomePath( $homePath )  
     {
-        $urlInfoX = parse_url( $homePath );
+        $urlInfoX = parse_url( 'https://' . $homePath );
         $dcY = trim( $urlInfoX['path'], '/' );
         $dcx = explode( '.', $dcY );
         $ext = array_pop( $dcx );
+
+
         if( count( $dcx ) > 0 )
         {
             $homePath = dirname( $homePath );
