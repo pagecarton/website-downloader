@@ -168,14 +168,14 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
         $xc = explode( '//', $data['website'] );
         $home = array_pop( $xc );
         $home = trim( $home, ' /' );
-
+        $home = self::filterHomePath( $home );
 
         if( stripos( $link, $home ) !== false )
         {
             //  fix
             //  templates.envytheme.com/poxo/default/index.html
-            $home = self::filterHomePath( $home );
             $localUrl = str_ireplace( $home, '', $link );
+   
         }
         else
         {
@@ -188,7 +188,8 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
                 $localUrl = implode( '/', $localArray );
             }
         }
-        
+
+
         if( strpos( $localUrl, '.php' ) )
         {
             $localUrl .= '.html';
@@ -317,18 +318,21 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
      * param string Home path e.g. http://example.com
      * return arrat 
      */
-	public static function getLinks( $content, $homePath )  
+	public static function getLinks( $content, $homePath, $realHomePath = '' )  
     {
         preg_match_all( static::$_linkRegex, $content, $matches ); 
         preg_match_all( static::$_linkRegexFull, $content, $fullLinks ); 
         $fullLinks[1] = $fullLinks[1] ? : array();
         $matches[2] = $matches[2] ? : array();
-        $storage = static::getObjectStorage( array( 'id' => 'local-links' . $homePath, 'device' => 'Session' ) );
+        $storage = static::getObjectStorage( array( 'id' => 'local-links' . ( $realHomePath ? : $homePath ), 'device' => 'Session' ) );
         $matches[2] = array_merge( $matches[2], $fullLinks[1] );
         $matches[2] = array_unique( $matches[2] );
+        //var_export( $matches[2] );
+        //var_export( $matches[2] );
+
         $links = array();
         $formerLinks = array();
-        $localLinks = array();
+        $localLinks = $realHomePath ? $storage->retrieve() : array();
         foreach( $matches[2] as $key => $link )
         {
             //  set this
@@ -382,8 +386,31 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
      */
 	public static function relativeLinkToFullPath( $link, $homePath )  
     {
-
+        //var_export( $homePath );
+        //var_export( $homePath );
+        $start = $link;
         $homePath = self::filterHomePath( $homePath );
+
+        if( strpos( $link, '../../' ) === 0 )
+        {
+            //var_export( $link );
+            $link = ltrim( $link, './' );
+            $link = '//' . dirname( dirname( $homePath ) ) . $link; 
+        }
+        elseif( strpos( $link, '../' ) === 0 )
+        {
+            //var_export( $link );
+            $link = ltrim( $link, './' );
+            $link = '//' . dirname( $homePath ) . $link; 
+        }
+        elseif( strpos( $link, './' ) === 0 )
+        {
+            $link = ltrim( $link, './' );
+            //var_export( $link );
+            $link = '//' . $homePath . '/' . $link; 
+            //var_export( $link );
+        }
+
 
         $homePath = trim( $homePath, ' /' );
         if( $link[0] == '/' && ! strstr( $link, '//' ) )
@@ -432,15 +459,24 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
             $link = $baseUrl . $link;
             break;
         }
+        if( stripos( $link, 'data:' ) === 0 )
+        { 
+            return false; 
+        }
+        if( stripos( $link, $homePath ) === 0 )
+        { 
+            $link = '//' . $link;
+        }
+
         if( ! strstr( $link, '//' ) )
         { 
             return false; 
         }
         $link = trim( $link, ' /' );
-   //     var_export( $link . '<br>' );
      //   $link = self::filterDomainName( $link );
         $link =  str_ireplace( 'www.', '', $link );
         $link = array_pop( explode( '//', $link ) );
+
         return $link;
     }
 
@@ -522,8 +558,33 @@ class PC_WebsiteGrabber_Project_Abstract extends PageCarton_Widget
                 {
                     $links = array_unique( array_combine( $links, $links ) );
                     unset( $links[''] );
-                    ksort( $links );
+            
                     $links = array_diff( $links, $pages );
+
+                    //  check second level because of css import links
+                    //  pick fonts, etc from css
+                    $cssContent = null;
+                    foreach( $links as $key => $link )
+                    {
+                        if( stripos( $link, '.css' ) )
+                        {
+
+                            $cssContent = self::getContent( $link ); 
+                            $content .= $cssContent; 
+
+                            if( $cssLinks = self::getLinks( $cssContent, dirname( $link ), $homePath ) )
+                            {
+
+                                $cssLinks = array_unique( array_combine( $cssLinks, $cssLinks ) );
+                                unset( $cssLinks[''] );
+                        
+                                ksort( $cssLinks );
+                                $links = array_merge( $links, $cssLinks );
+                                //var_export( $links );
+                            }        
+                        }
+                    }
+                    ksort( $links );
                     $fieldset->addElement( array( 'name' => 'links_to_download', 'label' => 'Other Assets', 'type' => 'SelectMultiple', 'value' => @$values['links_to_download'] ? : $links ), $links ); 
                 }
                 else
